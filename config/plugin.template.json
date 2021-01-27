@@ -1,0 +1,33 @@
+{
+	"global": {
+		"account_id": "insert_your_RPM_account_ID_here",
+		"insights_mode": {
+			"insights_insert_key": "insert_your_insights_insert_key_here"
+		},
+		"queueIgnores": 
+	   		[
+		   		"SYSTEM\\..*",
+		   		"AMQ.*",
+		   		"Amq\\.Mqexplorer\\..*"
+	   		],
+		"topicIgnores": 
+	   		[
+		   		"\\$SYS.*",
+		   		"SYSTEM.*"
+	   		]
+	},
+	"agents": [
+	           {
+	        	   "name": "queue-manager-descriptive-name",
+	        	   "host": "127.0.0.1",
+	        	   "port": 1414,
+	        	   "username": "",
+	        	   "queueManager": "queue-manager-name",
+	        	   "channel": "SYSTEM.DEF.SVRCONN",
+	        	   "queueIgnores": 
+	        	     [],
+	        	   "reportAdditionalQueueStatus": false,
+	        	   "reportTopicStatus": false
+	           }
+	]
+}

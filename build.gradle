@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+	id 'eclipse'
+}
+
+group = 'com.newrelic.labs'
+version = '2.6.0'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+
+    compile 'com.newrelic.experts:infra_publish:2.3.1'
+
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
+	compile group: 'com.ibm.mq', name: 'com.ibm.mq.allclient', version: '9.1.4.0'
+	
+	testImplementation 'junit:junit:4.12'
+}
+
+
+task allInOneJar(type: Jar) {
+	manifest {
+        attributes "Main-Class": "com.newrelic.infra.ibmmq.Main"
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+	archiveName 'plugin.jar'
+	destinationDir = file("$distsDir")
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
+task copyToConfig(type: Copy) {
+    from 'config'
+    into "$distsDir/config"
+    include 'logback.xml', 'plugin.template.json', 'newrelic.template.json', 'plugin.json'
+}
+
+task copyScripts(type: Copy) {
+    from 'scripts'
+    into "$distsDir"
+}
+
+task copyDashboards(type: Copy) {
+    from 'dashboards'
+    into "$distsDir/dashboards"
+}
+
+task copyReadMe(type: Copy) {
+    from projectDir
+    into "$distsDir"
+    include 'README.md'
+}
+
+jar.enabled=false
+assemble.dependsOn "allInOneJar"
+
+build.dependsOn "copyToConfig"
+build.dependsOn "copyScripts"
+build.dependsOn "copyReadMe"
+build.dependsOn "copyDashboards"
